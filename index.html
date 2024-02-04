@@ -156,12 +156,89 @@
         padding: 1rem;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
         margin: 10px;
+        overflow: hidden;
       }
 
       /* Drag and drop feature */
 
       .dragging {
         opacity: 0.5;
+      }
+
+      .delete {
+        border: 2px solid red;
+        border-radius: 10px;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transform: translate(100%, 50%);
+        display: inline-block;
+      }
+
+      .delete:hover,
+      .delete:active {
+        cursor: pointer;
+      }
+
+      .delete > img {
+        color: red;
+        padding: 1rem;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 200;
+        left: 0;
+        top: 0;
+        width: 350px;
+        height: 350px;
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.4);
+        width: 100%;
+        height: 100%;
+      }
+
+      /* #modalTextarea {
+        width: 300px;
+        height: 300px;
+      } */
+
+      .modal-close {
+        font-size: 2rem;
+        text-align: center;
+      }
+
+      .modal-close:hover,
+      .modal-close:focus {
+        color: black;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 400px;
+        height: 400px;
+        border-radius: 20px;
+      }
+
+      .modal-content > textarea {
+        width: 100%;
+        height: 80%;
+        border: none;
+        /* display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        flex-direction: column;
+        flex-wrap: wrap; */
+        resize: none;
+        outline: none;
+        color: white;
+        background-color: inherit;
       }
     </style>
   </head>
@@ -194,6 +271,7 @@
         <div class="delete">
           <img src="./delete.svg" alt="Delete" />
         </div>
+
         <div class="table-body">
           <div class="column blue">
             <h2>To do</h2>
@@ -218,9 +296,16 @@
         </div>
       </div>
     </div>
+
+    <div class="modal">
+      <div class="modal-content">
+        <span class="modal-close">&times;</span>
+        <textarea placeholder="write here ..."></textarea>
+      </div>
+    </div>
     <script>
       // drawer-active
-
+      const notes = document.querySelectorAll(".note");
       const drawer = document.querySelector(".drawer");
       const drawerButton = document.querySelector(".drawer-toggle>button");
       const drawerButtonImg = document.querySelector(
@@ -229,6 +314,13 @@
       const columnBodys = document.querySelectorAll(".column-body");
       const draggables = document.querySelectorAll(".draggable");
       const drawerBody = document.querySelector(".drawer-body");
+      const deleteContainer = document.querySelector(".delete");
+      const modal = document.querySelector(".modal");
+      const modalClose = document.querySelector(".modal-close");
+      const textArea = document.querySelector(".modal-content>textarea");
+      const colors = ["blue", "green", "lavanta", "purple", "orange"];
+      const modalBody = document.querySelector(".modal-content");
+      let currentNote = null;
 
       drawerButton.addEventListener("click", () => {
         if (drawer.classList.contains("drawer-active")) {
@@ -251,6 +343,7 @@
       draggables.forEach((draggable) => {
         draggable.addEventListener("dragstart", () => {
           draggable.classList.add("dragging");
+          DeactivateDrawer();
         });
 
         draggable.addEventListener("dragend", () => {
@@ -265,6 +358,41 @@
           // const draggableCopy = draggable.cloneNode(true);
           columnBody.appendChild(draggable);
         });
+      });
+
+      deleteContainer.addEventListener("dragover", (e) => {
+        e.preventDefault();
+      });
+
+      deleteContainer.addEventListener("drop", (e) => {
+        // e.preventDefault();
+        console.log("drop");
+
+        const draggable = document.querySelector(".dragging");
+        if (draggable) {
+          draggable.remove();
+        }
+      });
+
+      notes.forEach((note) => {
+        note.addEventListener("dblclick", () => {
+          modal.style.display = "block";
+          // console.log(note.classList.contains("blue"));
+          colors.forEach((color) => {
+            if (note.classList.contains(color)) {
+              modalBody.classList.add(color);
+            }
+          });
+
+          currentNote = note;
+          textArea.value = note.textContent;
+        });
+      });
+      modalClose.addEventListener("click", () => {
+        modal.style.display = "none";
+        if (currentNote) {
+          currentNote.textContent = textArea.value;
+        }
       });
     </script>
   </body>
