@@ -2,6 +2,11 @@
 
 This project is a simple Kanban system implementation. It allows users to manage tasks across different statuses by dragging and droping. The system features five columns: "To Do", "In Progress", "Ready for Deploy", and "Done".
 
+## Live Demo
+
+The project is deployed and can be accessed live on Vercel. You can view the live site by visiting the following link:  
+[Live Site on Vercel](https://kanban-system-nu.vercel.app/)  
+This link takes you to the current version of the application hosted on Vercel, allowing you to interact with the fully functional Kanban system without needing to install or set up the project locally.  
 
 ## Features
 
